@@ -12,7 +12,7 @@ SECRET_NAMES=(
 
 EC2_REGION=`curl http://169.254.169.254/latest/dynamic/instance-identity/document|grep region|awk -F\" '{print $4}'`
 
-for SECRET_NAME in "${SECRET_NAME[@]}"
+for SECRET_NAME in "${SECRET_NAMES[@]}"
 do
   SECRET=$(aws secretsmanager get-secret-value --region "${EC2_REGION}" --secret-id "${SECRET_NAME}" --query SecretString --output text | jq -r ."${SECRET_NAME}")
   echo "${SECRET_NAME##*_*_} = ${SECRET}" >> config.txt
