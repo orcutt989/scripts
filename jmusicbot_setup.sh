@@ -5,15 +5,18 @@ curl -s https://api.github.com/repos/jagrosh/musicbot/releases/latest | grep "br
 
 filename=$(ls)
 
-vars=(
+secret_names=(
 "jmusicbot_discord_bot_token"
 "discord_id_owner"
 )
 
-for var in "${vars[@]}"
+EC2_AVAIL_ZONE=`curl -s http://169.254.169.254/latest/meta-data/placement/availability-zone`
+EC2_REGION="`echo \"$EC2_AVAIL_ZONE\" | sed 's/[a-z]$//'`"
+
+for secret_name in "${secret_names[@]}"
 do
-  secret=$(aws secretsmanager get-secret-value --region us-east-2 --secret-id "${var}" --query SecretString --output text | jq -r ."${var}")
-  echo "${var##*_*_} = ${secret}" >> config.txt
+  secret=$(aws secretsmanager get-secret-value --region "${EC2_REGION}" --secret-id "${var}" --query SecretString --output text | jq -r ."${var}")
+  echo "${secret_name##*_*_} = ${secret}" >> config.txt
 done
 
 echo "prefix = \"-\"" >> config.txt
