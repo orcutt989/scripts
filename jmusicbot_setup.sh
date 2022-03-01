@@ -20,5 +20,5 @@ done
 
 echo "prefix = \"-\"" >> config.txt
 
-nohup java -Dnogui=true -jar "${filename}" &
+nohup java -Dnogui=true -jar "${FILENAME}" &
 
